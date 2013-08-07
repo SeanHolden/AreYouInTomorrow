@@ -9,11 +9,25 @@ app.configure(function() {
   app.set('views', __dirname+'/views');
   app.use(expressLayouts);
   app.use(express.static(__dirname + '/public'));
+  app.use(express.bodyParser());
 });
 
 app.get('/', function(request, response){
   response.setHeader('Content-Type', 'text/html');
-  response.end("<p>Hello, world!</p>");
+  response.render('index');
+  response.end();
+});
+
+app.post('/yes', function(request, response){
+  response.end();
+});
+
+app.post('/no', function(request, response){
+  response.end();
+});
+
+app.post('/maybe', function(request, response){
+  response.end();
 });
 
 var port = process.env.PORT || 3000;
