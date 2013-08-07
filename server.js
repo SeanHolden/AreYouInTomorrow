@@ -1,7 +1,11 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
+var getHelpers = require('./lib/helpers');
 var app = express();
+
+// Set up custom helper functions
+var helpers = getHelpers();
 
 // Settings
 app.configure(function() {
@@ -12,6 +16,8 @@ app.configure(function() {
   app.use(express.bodyParser());
 });
 
+
+// Routes
 app.get('/', function(request, response){
   response.setHeader('Content-Type', 'text/html');
   response.render('index');
@@ -19,23 +25,11 @@ app.get('/', function(request, response){
 });
 
 app.post('/response', function(request, response){
-  console.log("Body = " + request.body.Body);
-  console.log("From = " + request.body.From);
-
   var body = request.body.Body;
   var from = request.body.From;
-
-  if( body.trim()[0] == '1' ){
-    console.log('Yep, %s will be in tomorrow', from);
-  }else if(body.trim()[0] == '2' ){
-    console.log('Nope, %s will not be in tomorrow', from);
-  }else if(body.trim()[0] == '3' ){
-    console.log('Maybe %s will be in tomorrow', from);
-  }else{
-    console.log('Unrecognised response. Not 1, 2 or 3.');
-  };
-
-  response.end("Thanks, message received!");
+  helpers.processResponse(body, from, response, function(response){
+    response.end("Thanks, message received!");
+  });
 });
 
 var port = process.env.PORT || 3000;
