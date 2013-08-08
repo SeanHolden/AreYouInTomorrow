@@ -2,6 +2,7 @@ var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
 var Sequelize = require("sequelize");
+var DB = require('./config/database');
 var getHelpers = require('./lib/helpers');
 var app = express();
 
@@ -19,13 +20,9 @@ app.configure(function() {
 
 ////////////////////////////////////////////////
 
-// Database config...
-var sequelize = new Sequelize('are_you_in_tomorrow', 'root', null, {
-  dialect: 'mysql',
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
-  pool: { maxConnections: 5, maxIdleTime: 30}
-});
+// Set up database config
+var db = DB();
+var sequelize = db.setup();
 
 // Define models
 var User = sequelize.define('User', {
@@ -71,8 +68,8 @@ app.post('/response', function(request, response){
 // });
 
 // app.get('/createdan', function(request, response){
-//   User.create({ firstName: 'Dan' }).success(function(x) {
-//     console.log(x);
+//   User.create({ firstName: 'Dan' }).success(function(record) {
+//     console.log('created new record: %s', record.dataValues);
 //   });
 // });
 
