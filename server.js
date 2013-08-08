@@ -2,12 +2,12 @@ var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
 var Sequelize = require("sequelize");
-var DB = require('./config/database');
+var db = require('./config/database');
 var getHelpers = require('./lib/helpers');
 var app = express();
 
-// Set up custom helper functions
 var helpers = getHelpers();
+var sequelize = db.setup();
 
 // Settings
 app.configure(function() {
@@ -18,29 +18,8 @@ app.configure(function() {
   app.use(express.bodyParser());
 });
 
-////////////////////////////////////////////////
-
-// Set up database config
-var db = DB();
-var sequelize = db.setup();
-
-// Define user model
+// Define models
 var User = sequelize.import(__dirname + "/models/user");
-
-
-
-// Sync models with the DB (create tables)
-sequelize.sync().complete(function(err) {
-  if (err) {
-    throw err;
-  } else {
-    var port = process.env.PORT || 3000;
-    app.listen(port);
-    console.log('Listening on ' + port);
-  }
-});
-
-//////////////////////////////////////////////////
 
 // Routes
 app.get('/', function(request, response){
@@ -69,4 +48,15 @@ app.post('/response', function(request, response){
 //     console.log(record.dataValues);
 //   });
 // });
+
+// Sync models with the DB (create tables)
+sequelize.sync().complete(function(err) {
+  if (err) {
+    throw err;
+  } else {
+    var port = process.env.PORT || 3000;
+    app.listen(port);
+    console.log('Listening on ' + port);
+  }
+});
 
