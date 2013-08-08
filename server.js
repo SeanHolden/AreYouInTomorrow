@@ -1,6 +1,7 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
+var Sequelize = require("sequelize");
 var getHelpers = require('./lib/helpers');
 var app = express();
 
@@ -16,6 +17,37 @@ app.configure(function() {
   app.use(express.bodyParser());
 });
 
+////////////////////////////////////////////////
+
+// Database config...
+var sequelize = new Sequelize('are_you_in_tomorrow', 'root', null, {
+  dialect: 'mysql',
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  pool: { maxConnections: 5, maxIdleTime: 30}
+});
+
+// Define models
+var User = sequelize.define('User', {
+  firstName: { type: Sequelize.STRING,
+               validate: {
+                 notNull: true
+               }
+             }
+});
+
+// Sync models with the DB (create tables)
+sequelize.sync().complete(function(err) {
+  if (err) {
+    throw err;
+  } else {
+    var port = process.env.PORT || 3000;
+    app.listen(port);
+    console.log('Listening on ' + port);
+  }
+});
+
+//////////////////////////////////////////////////
 
 // Routes
 app.get('/', function(request, response){
@@ -32,6 +64,15 @@ app.post('/response', function(request, response){
   });
 });
 
-var port = process.env.PORT || 3000;
-app.listen(port);
-console.log('Listening on ' + port);
+// app.get('/testdb', function(request, response){
+//   User.find({ where: { firstName: 'Dan' } }).success(function(user) {
+//     console.log('Found this user: ' + user.firstName + ' with ID: ' + user.id);
+//   })
+// });
+
+// app.get('/createdan', function(request, response){
+//   User.create({ firstName: 'Dan' }).success(function(x) {
+//     console.log(x);
+//   });
+// });
+
