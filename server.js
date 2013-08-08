@@ -1,13 +1,10 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
-var Sequelize = require("sequelize");
-var db = require('./config/database');
-var getHelpers = require('./lib/helpers');
+var sequelize = require('./config/database').setup();
+var helpers = require('./lib/helpers');
 var app = express();
 
-var helpers = getHelpers();
-var sequelize = db.setup();
 
 // Settings
 app.configure(function() {

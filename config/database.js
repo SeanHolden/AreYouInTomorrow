@@ -1,10 +1,9 @@
 // Database config...
-var Sequelize = require("sequelize");
 
-// function DB(){
+var Sequelize = require("sequelize");
  
 function setup(){
-  var sequelize = new Sequelize('are_you_in_tomorrow', 'root', null, {
+  var sequelize = new Sequelize( process.env.DB_NAME || 'are_you_in_tomorrow', 'root', null, {
     dialect: 'mysql',
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
@@ -13,11 +12,6 @@ function setup(){
 
   return sequelize;
 }
-
-//   return { 
-//     setup : setup
-//   };
-// }
 
 module.exports = { 
   setup : setup 
