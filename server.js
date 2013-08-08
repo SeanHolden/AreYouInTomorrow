@@ -24,14 +24,10 @@ app.configure(function() {
 var db = DB();
 var sequelize = db.setup();
 
-// Define models
-var User = sequelize.define('User', {
-  firstName: { type: Sequelize.STRING,
-               validate: {
-                 notNull: true
-               }
-             }
-});
+// Define user model
+var User = sequelize.import(__dirname + "/models/user");
+
+
 
 // Sync models with the DB (create tables)
 sequelize.sync().complete(function(err) {
@@ -62,14 +58,15 @@ app.post('/response', function(request, response){
 });
 
 // app.get('/testdb', function(request, response){
-//   User.find({ where: { firstName: 'Dan' } }).success(function(user) {
+//   User.find({ where: { firstName: 'Sean' } }).success(function(user) {
 //     console.log('Found this user: ' + user.firstName + ' with ID: ' + user.id);
 //   })
 // });
 
 // app.get('/createdan', function(request, response){
-//   User.create({ firstName: 'Dan' }).success(function(record) {
-//     console.log('created new record: %s', record.dataValues);
+//   User.create({ firstName: 'Sean' }).success(function(record) {
+//     console.log('created new record:');
+//     console.log(record.dataValues);
 //   });
 // });
 
