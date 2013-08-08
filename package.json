@@ -9,7 +9,7 @@
     "express-ejs-layouts" : "0.3.1",
     "twilio" : "1.1.4",
     "mysql" : "2.0.0-alpha7",
-    "orm" : "2.1.0"
+    "sequelize" : "2.0.0-alpha2"
   },
   "engines":  {
     "node":"0.10.15"
