@@ -21,10 +21,10 @@ app.get('/', function(request, response){
   response.end();
 });
 
-app.post('/mobileresponse', function(request, response){
-  response.setHeader('Content-Type', 'application/json');
-  helpers.processResponse(User, When, request, response, function(response){
-    response.end("Thanks, message received!");
+app.post('/mobileresponse', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
+  helpers.processResponse(User, When, req, res, function(msg, res){
+    res.end(msg);
   });
 });
 
