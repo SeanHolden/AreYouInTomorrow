@@ -31,12 +31,8 @@ app.post('/response', function(request, response){
 
 app.get('/api/users', function(request, response){
   User.findAll({include:[When]}).success(function(users){
-    console.log('/////////////////USERS HERE////////////:');
-    for(var i=0;i<users[1].whens.length;i++){
-      when = users[1].whens[i];
-      console.log('When: '+ i);
-      console.log(when.dataValues);
-    };
+    console.log('################################################');
+    console.log(JSON.stringify(users))
     response.end('Thanks');
   });
 });
