@@ -21,19 +21,17 @@ app.get('/', function(request, response){
   response.end();
 });
 
-app.post('/response', function(request, response){
-  var body = request.body.Body;
-  var from = request.body.From;
-  helpers.processResponse(User, When, body, from, response, function(response){
+app.post('/mobileresponse', function(request, response){
+  response.setHeader('Content-Type', 'application/json');
+  helpers.processResponse(User, When, request, response, function(response){
     response.end("Thanks, message received!");
   });
 });
 
 app.get('/api/users', function(request, response){
   User.findAll({include:[When]}).success(function(users){
-    console.log('################################################');
-    console.log(JSON.stringify(users))
-    response.end('Thanks');
+    console.log(JSON.stringify(users));
+    response.end(JSON.stringify(users));
   });
 });
 
@@ -49,10 +47,8 @@ app.post('/api/create-user', function(request, response){
 
 app.post('/api/inoffice', function(request, response){
   var date = request.body.date;
-  var areyouin = request.body.areyouin;
-  var msisdn = request.body.msisdn;
   if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
-    helpers.createNewWhenRecord(User, When, date, areyouin, msisdn, response, function(err, response){
+    helpers.createNewWhenRecord(User, When, request, response, function(err, response){
       if(err){
         response.end('No record for user.');
       }else{
