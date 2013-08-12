@@ -9,10 +9,10 @@ function setup(){
     port: process.env.DB_PORT || 3306,
     pool: { maxConnections: 5, maxIdleTime: 30}
   });
-
+  
   return sequelize;
 }
 
 module.exports = { 
-  setup : setup 
+  setup : setup
 };

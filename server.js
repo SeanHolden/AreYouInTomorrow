@@ -10,6 +10,9 @@ require('./config/app_config').configure( app, express, expressLayouts );
 
 // Define models
 var User = sequelize.import(__dirname + "/models/user");
+var When = sequelize.import(__dirname + "/models/when");
+User.hasMany(When);
+When.belongsTo(User);
 
 // Routes
 app.get('/', function(request, response){
@@ -21,25 +24,51 @@ app.get('/', function(request, response){
 app.post('/response', function(request, response){
   var body = request.body.Body;
   var from = request.body.From;
-  helpers.processResponse(body, from, response, function(response){
+  helpers.processResponse(User, When, body, from, response, function(response){
     response.end("Thanks, message received!");
   });
 });
 
-app.get('/testdb', function(request, response){
-  User.find({ where: { firstName: 'Sean' } }).success(function(user) {
-    console.log('Found this user: ' + user.firstName + ' with ID: ' + user.id);
-  })
-});
-
-app.get('/createdan', function(request, response){
-  User.create({ firstName: 'Sean' }).success(function(record) {
-    console.log('created new record:');
-    console.log(record.dataValues);
+app.get('/api/users', function(request, response){
+  User.findAll({include:[When]}).success(function(users){
+    console.log('/////////////////USERS HERE////////////:');
+    for(var i=0;i<users[1].whens.length;i++){
+      when = users[1].whens[i];
+      console.log('When: '+ i);
+      console.log(when.dataValues);
+    };
+    response.end('Thanks');
   });
 });
 
-// Sync models with the DB (create tables)
+app.post('/api/create-user', function(request, response){
+  var firstname = request.body.firstname;
+  var msisdn = request.body.msisdn;
+  User.create({ firstName: firstname, msisdn: msisdn }).success(function(record){
+    console.log('created new record:');
+    console.log(record.dataValues);
+    response.end('Thanks');
+  });
+});
+
+app.post('/api/inoffice', function(request, response){
+  var date = request.body.date;
+  var areyouin = request.body.areyouin;
+  var msisdn = request.body.msisdn;
+  if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
+    helpers.createNewWhenRecord(User, When, date, areyouin, msisdn, response, function(err, response){
+      if(err){
+        response.end('No record for user.');
+      }else{
+        response.end('Thanks, response has been saved.');
+      }
+    });
+  }else{
+    response.end('Date is in wrong format');
+  };
+});
+
+// Sync models with the DB and start server.
 sequelize.sync().complete(function(err) {
   if (err) {
     throw err;
