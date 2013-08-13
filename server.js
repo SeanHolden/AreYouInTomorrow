@@ -22,7 +22,7 @@ When.belongsTo(User);
 // Routes
 app.get('/', function(req, res){
   res.setHeader('Content-Type', 'text/html');
-  res.render('index');
+  res.render('index', {layout:'layouts/layout'});
   res.end();
 });
 
