@@ -23,7 +23,7 @@ app.get('/', function(request, response){
 
 app.post('/mobileresponse', function(req, res){
   res.setHeader('Content-Type', 'application/json');
-  helpers.processResponse(User, When, req, res, function(msg, res){
+  helpers.processResponse(User, When, req, function(msg){
     res.end(msg);
   });
 });
@@ -48,7 +48,7 @@ app.post('/api/create-user', function(request, response){
 app.post('/api/inoffice', function(request, response){
   var date = request.body.date;
   if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
-    helpers.createNewWhenRecord(User, When, request, response, function(err, response){
+    helpers.createNewWhenRecord(User, When, request, function(err){
       if(err){
         response.end('No record for user.');
       }else{
