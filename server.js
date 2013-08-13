@@ -15,10 +15,10 @@ User.hasMany(When);
 When.belongsTo(User);
 
 // Routes
-app.get('/', function(request, response){
-  response.setHeader('Content-Type', 'text/html');
-  response.render('index');
-  response.end();
+app.get('/', function(req, res){
+  res.setHeader('Content-Type', 'text/html');
+  res.render('index');
+  res.end();
 });
 
 app.post('/mobileresponse', function(req, res){
@@ -28,35 +28,35 @@ app.post('/mobileresponse', function(req, res){
   });
 });
 
-app.get('/api/users', function(request, response){
+app.get('/api/users', function(req, res){
   User.findAll({include:[When]}).success(function(users){
     console.log(JSON.stringify(users));
-    response.end(JSON.stringify(users));
+    res.end(JSON.stringify(users));
   });
 });
 
-app.post('/api/create-user', function(request, response){
-  var firstname = request.body.firstname;
-  var msisdn = request.body.msisdn;
+app.post('/api/create-user', function(req, res){
+  var firstname = req.body.firstname;
+  var msisdn = req.body.msisdn;
   User.create({ firstName: firstname, msisdn: msisdn }).success(function(record){
     console.log('created new record:');
     console.log(record.dataValues);
-    response.end('Thanks');
+    res.end('Thanks');
   });
 });
 
-app.post('/api/inoffice', function(request, response){
-  var date = request.body.date;
+app.post('/api/inoffice', function(req, res){
+  var date = req.body.date;
   if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
-    helpers.createNewWhenRecord(User, When, request, function(err){
+    helpers.createNewWhenRecord(User, When, req, function(err){
       if(err){
-        response.end('No record for user.');
+        res.end('No record for user.');
       }else{
-        response.end('Thanks, response has been saved.');
+        res.end('Thanks, response has been saved.');
       }
     });
   }else{
-    response.end('Date is in wrong format');
+    res.end('Date is in wrong format');
   };
 });
 
