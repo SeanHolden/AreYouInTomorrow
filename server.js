@@ -1,3 +1,8 @@
+// TODO:
+// * Display results in a feed. Weekly or daily.
+// * Add lastName to database
+// * Create a front end way of allowing users to register their name and mobile number
+
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var twilio = require('twilio');
@@ -29,8 +34,8 @@ app.post('/mobileresponse', function(req, res){
 });
 
 app.get('/api/users', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
   User.findAll({include:[When]}).success(function(users){
-    console.log(JSON.stringify(users));
     res.end(JSON.stringify(users));
   });
 });
@@ -38,10 +43,8 @@ app.get('/api/users', function(req, res){
 app.post('/api/create-user', function(req, res){
   var firstname = req.body.firstname;
   var msisdn = req.body.msisdn;
-  User.create({ firstName: firstname, msisdn: msisdn }).success(function(record){
-    console.log('created new record:');
-    console.log(record.dataValues);
-    res.end('Thanks');
+  User.create({ firstName: firstname, msisdn: msisdn }).success(function(user){
+    res.end('Thanks, new user created.');
   });
 });
 
