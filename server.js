@@ -1,4 +1,5 @@
 // TODO:
+// * Create an API JSON view for the current week, monday to friday for all users.
 // * Display results in a feed. Weekly or daily.
 // * Add lastName to database
 // * Create a front end way of allowing users to register their name and mobile number
@@ -30,6 +31,21 @@ app.post('/mobileresponse', function(req, res){
   res.setHeader('Content-Type', 'application/json');
   helpers.processResponse(User, When, req, function(msg){
     res.end(msg);
+  });
+});
+
+app.get('/api/whosin', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
+  var dateString = req.query.date;
+  var splitDate = req.query.date.split('-');
+  var date = new Date(dateString+' GMT');
+  var dayOfWeek = date.getDay();
+  console.log(date);
+  User.findAll( { include: [When] } ).success(function(users){
+    var barry = users[1];
+    barry.getWhens({where:{date:date}}).success(function(barrysWhens){
+      res.end(JSON.stringify(barrysWhens[0]));
+    });
   });
 });
 
@@ -73,4 +89,3 @@ sequelize.sync().complete(function(err) {
     console.log('Listening on ' + port);
   }
 });
-
