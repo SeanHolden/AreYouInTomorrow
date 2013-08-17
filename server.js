@@ -34,21 +34,6 @@ app.post('/mobileresponse', function(req, res){
   });
 });
 
-app.get('/api/whosin', function(req, res){
-  res.setHeader('Content-Type', 'application/json');
-  var dateString = req.query.date;
-  var splitDate = req.query.date.split('-');
-  var date = new Date(dateString+' GMT');
-  var dayOfWeek = date.getDay();
-  console.log(date);
-  User.findAll( { include: [When] } ).success(function(users){
-    var barry = users[1];
-    barry.getWhens({where:{date:date}}).success(function(barrysWhens){
-      res.end(JSON.stringify(barrysWhens[0]));
-    });
-  });
-});
-
 app.get('/api/users', function(req, res){
   res.setHeader('Content-Type', 'application/json');
   User.findAll({include:[When]}).success(function(users){
@@ -64,20 +49,40 @@ app.post('/api/create-user', function(req, res){
   });
 });
 
-app.post('/api/inoffice', function(req, res){
-  var date = req.body.date;
-  if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
-    helpers.createNewWhenRecord(User, When, req, function(err){
-      if(err){
-        res.end('No record for user.');
+app.get('/test/whosinonthisday', function(req, res){
+  if(req.query.date){
+    checkDateValid(req.query.date, function(validDate){
+      if(validDate){
+        whosInOnThisDay(validDate, function(){
+          res.end('Done');
+        });
       }else{
-        res.end('Thanks, response has been saved.');
-      }
+        res.end('Date invalid');
+      };
     });
-  }else{
-    res.end('Date is in wrong format');
-  };
+  }
 });
+
+function checkDateValid(date, callback){
+  if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
+    callback(date);
+  }else{
+    callback(null);
+  };
+}
+
+function whosInOnThisDay(dateString, callback){
+  var date = new Date(dateString+' GMT');
+  When.findAll({where:{date:date},include:[User]}).success(function(whens){
+    var responses = {};
+    for(var i=0;i<whens.length;i++){
+      var user = whens[i].user.dataValues.firstName;
+      responses[user] = whens[i].dataValues.areYouIn;
+    };
+    console.log(JSON.stringify(responses));
+    callback();
+  });
+}
 
 // Sync models with the DB and start server.
 sequelize.sync().complete(function(err) {
