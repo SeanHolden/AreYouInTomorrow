@@ -1,5 +1,4 @@
 // TODO:
-// * Create an API JSON view for the current week, monday to friday for all users.
 // * Display results in a feed. Weekly or daily.
 // * Add lastName to database
 // * Create a front end way of allowing users to register their name and mobile number
