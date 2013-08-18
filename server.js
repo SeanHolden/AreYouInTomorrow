@@ -48,6 +48,8 @@ app.post('/api/create-user', function(req, res){
   });
 });
 
+// Usage. Call get request on this route, passing a date as a query.
+// Query should be in following format: date=yyyy-mm-dd
 app.get('/api/whosinonthisday', function(req, res){
   res.setHeader('Content-Type', 'application/json');
   if(req.query.date){
@@ -65,21 +67,23 @@ app.get('/api/whosinonthisday', function(req, res){
 
 app.get('/api/whosinthisweek', function(req ,res){
   res.setHeader('Content-Type', 'application/json');
-  if(req.query.date){
-    helpers.checkDateValid(req.query.date, function(validDate){
-      if(validDate){
-        var date = new Date(validDate);
-        helpers.getTheWeekOf(date, function(weekDays){
-          helpers.getWeekArray(When, User, weekDays, function(weekArray){
-            var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
-            res.end( JSON.stringify(sortedWeek) );
-          });
+  var d = new Date();
+  var queryDate = req.query.date || d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+
+  helpers.checkDateValid(queryDate, function(validDate){
+    if(validDate){
+      var date = new Date(validDate);
+      helpers.getTheWeekOf(date, function(weekDays){
+        helpers.getWeekArray(When, User, weekDays, function(weekArray){
+          var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
+          res.end( JSON.stringify(sortedWeek) );
         });
-      }else{
-        res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
-      };
-    });
-  }
+      });
+    }else{
+      res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
+    };
+  });
+
 });
 
 // Sync models with the DB and start server.
