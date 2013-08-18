@@ -22,8 +22,16 @@ When.belongsTo(User);
 // Routes
 app.get('/', function(req, res){
   res.setHeader('Content-Type', 'text/html');
-  res.render('index', {layout:'layouts/layout'});
-  res.end();
+  var today = new Date();
+  helpers.getTheWeekOf(today, function(week){
+    helpers.dateToString(week[0],function(dateString){
+      res.render('index', {
+        layout:'layouts/layout',
+        locals:{thisMonday: dateString.replace(' GMT','')}
+      });
+      res.end();
+    });
+  });
 });
 
 app.post('/mobileresponse', function(req, res){
