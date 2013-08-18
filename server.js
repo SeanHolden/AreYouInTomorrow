@@ -49,41 +49,39 @@ app.post('/api/create-user', function(req, res){
   });
 });
 
-app.get('/test/whosinonthisday', function(req, res){
+app.get('/api/whosinonthisday', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
   if(req.query.date){
-    checkDateValid(req.query.date, function(validDate){
+    helpers.checkDateValid(req.query.date, function(validDate){
       if(validDate){
-        whosInOnThisDay(validDate, function(jsonResponse){
-          res.end(jsonResponse);
+        helpers.whosInOnThisDay(When, User, validDate, function(objResponse){
+          res.end(JSON.stringify(objResponse));
         });
       }else{
-        res.end('Date invalid');
+        res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
       };
     });
   }
 });
 
-function checkDateValid(date, callback){
-  if( date.match(/^\d{4}-\d\d?-\d\d?$/ ) ){
-    callback(date);
-  }else{
-    callback(null);
-  };
-}
-
-function whosInOnThisDay(dateString, callback){
-  var date = new Date(dateString+' GMT');
-  When.findAll({where:{date:date},include:[User]}).success(function(whens){
-    var responses = {};
-    for(var i=0;i<whens.length;i++){
-      var user = whens[i].user.dataValues.firstName;
-      responses[user] = whens[i].dataValues.areYouIn;
-    };
-    dateObject = {date:dateString,whosin:responses};
-    console.log(JSON.stringify(dateObject));
-    callback(JSON.stringify(dateObject));
-  });
-}
+app.get('/api/whosinthisweek', function(req ,res){
+  res.setHeader('Content-Type', 'application/json');
+  if(req.query.date){
+    helpers.checkDateValid(req.query.date, function(validDate){
+      if(validDate){
+        var date = new Date(validDate);
+        helpers.getTheWeekOf(date, function(weekDays){
+          helpers.getWeekArray(When, User, weekDays, function(weekArray){
+            var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
+            res.end( JSON.stringify(sortedWeek) );
+          });
+        });
+      }else{
+        res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
+      };
+    });
+  }
+});
 
 // Sync models with the DB and start server.
 sequelize.sync().complete(function(err) {
