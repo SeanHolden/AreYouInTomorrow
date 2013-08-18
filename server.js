@@ -53,8 +53,8 @@ app.get('/test/whosinonthisday', function(req, res){
   if(req.query.date){
     checkDateValid(req.query.date, function(validDate){
       if(validDate){
-        whosInOnThisDay(validDate, function(){
-          res.end('Done');
+        whosInOnThisDay(validDate, function(jsonResponse){
+          res.end(jsonResponse);
         });
       }else{
         res.end('Date invalid');
@@ -79,8 +79,9 @@ function whosInOnThisDay(dateString, callback){
       var user = whens[i].user.dataValues.firstName;
       responses[user] = whens[i].dataValues.areYouIn;
     };
-    console.log(JSON.stringify(responses));
-    callback();
+    dateObject = {date:dateString,whosin:responses};
+    console.log(JSON.stringify(dateObject));
+    callback(JSON.stringify(dateObject));
   });
 }
 
