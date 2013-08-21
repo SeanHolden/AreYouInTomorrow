@@ -57,6 +57,17 @@ app.post('/api/create-user', function(req, res){
   });
 });
 
+app.post('/api/reset-tokens', function(req, res){
+  var query = req.body.valid;
+  if(query == 'valid'){
+    helpers.resetTokens(User, function(){
+      res.end('Tokens reset.');
+    });
+  }else{
+    res.end('Not today.');
+  };
+});
+
 // Usage. Call get request on this route, passing a date as a query.
 // Query should be in following format: date=yyyy-mm-dd
 app.get('/api/whosinonthisday', function(req, res){
