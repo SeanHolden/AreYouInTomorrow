@@ -1,5 +1,5 @@
 // TODO:
-// * Display results in a feed. Weekly or daily.
+// * Use bitly API to generate shortlinks to send out via SMS
 // * Add lastName to database
 // * Create a front end way of allowing users to register their name and mobile number
 
