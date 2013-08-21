@@ -25,13 +25,11 @@ app.get('/', function(req, res){
   var dateFormat = require('dateformat');
   var today = new Date();
   helpers.getTheWeekOf(today, function(week){
-    // helpers.dateToString(week[0],function(dateString){
-      res.render('index', {
-        layout:'layouts/layout',
-        locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
-      });
-      res.end();
-    // });
+    res.render('index', {
+      layout:'layouts/layout',
+      locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
+    });
+    res.end();
   });
 });
 
@@ -52,8 +50,10 @@ app.get('/api/users', function(req, res){
 app.post('/api/create-user', function(req, res){
   var firstname = req.body.firstname;
   var msisdn = req.body.msisdn;
-  User.create({ firstName: firstname, msisdn: msisdn }).success(function(user){
-    res.end('Thanks, new user created.');
+  helpers.generateToken(function(token){
+    User.create({ firstName: firstname, msisdn: msisdn, token: token }).success(function(user){
+      res.end('Thanks, new user created.');
+    });
   });
 });
 

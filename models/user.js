@@ -14,6 +14,9 @@ module.exports = function(sequelize, DataTypes) {
       validate: {
         notNull: true
       }
+    },
+    token: {
+      type: DataTypes.TEXT
     }
   });
 }
