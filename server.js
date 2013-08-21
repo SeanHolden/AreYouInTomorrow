@@ -22,15 +22,16 @@ When.belongsTo(User);
 // Routes
 app.get('/', function(req, res){
   res.setHeader('Content-Type', 'text/html');
+  var dateFormat = require('dateformat');
   var today = new Date();
   helpers.getTheWeekOf(today, function(week){
-    helpers.dateToString(week[0],function(dateString){
+    // helpers.dateToString(week[0],function(dateString){
       res.render('index', {
         layout:'layouts/layout',
-        locals:{thisMonday: dateString.replace(' GMT','')}
+        locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
       });
       res.end();
-    });
+    // });
   });
 });
 
