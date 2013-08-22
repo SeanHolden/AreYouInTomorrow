@@ -20,7 +20,7 @@
 }
 /* Mask */
 .switch .mask {
-  background: url('http://www.maissan.net/templates/articles/jquery-switch/images/switch-mask.png');
+  background: url('/img/switch-mask.png');
   display: block;
   position: absolute;
   top: 0;

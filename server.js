@@ -47,8 +47,21 @@ app.get('/myweek', function(req, res){
   helpers.getTheWeekOf(today, function(week){
     res.render('myweek', {
       layout:'layouts/layout',
-      locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
+      locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy"),
+              weekCommencing: week[0]}
     });
+  });
+});
+
+app.post('/myweek', function(req, res){
+  var token = req.body.token;
+
+  User.find({where:{token:token}}).success(function(user){
+    if(user){
+      helpers.saveWeekForUser(req.body, When, user, res);
+    }else{
+      res.end('Oops. No user found under this token.');
+    };
   });
 });
 
@@ -67,6 +80,22 @@ app.post('/api/create-user', function(req, res){
       res.end('Thanks, new user created.');
     });
   });
+});
+
+app.get('/api/find-user-by-token', function(req, res){
+  res.setHeader('Content-Type', 'application/json');
+  var token = req.query.token;
+  if (token){
+    User.find({where:{token: token},attributes: ['id','firstName','token']}).success(function(user){
+      if(user){
+        res.end(JSON.stringify(user));
+      }else{
+        res.end(JSON.stringify({"Error":"No user found."}));
+      };
+    });
+  }else{
+    res.end(JSON.stringify({"Error":"No Token given."}));
+  };
 });
 
 app.post('/api/reset-tokens', function(req, res){

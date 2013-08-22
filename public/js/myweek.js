@@ -1,5 +1,6 @@
 $(document).ready(function(){
   initializeSwitches();
+  getToken();
 });
 
 function initializeSwitches(){
@@ -29,4 +30,28 @@ function initializeSwitches(){
     // Toggle state of checkbox
     $(this).next()[0].checked = !$(this).next()[0].checked;
   });
+}
+
+function getToken(){
+  getParameterByName('token', function(token){
+    $('#token').val(token);
+    getUserName(token);
+  });
+}
+
+function getUserName(token){
+  $.ajax({
+    type:"GET",
+    url:"/api/find-user-by-token",
+    data:"token="+token
+  }).done(function(data){
+    $('#greeting').html("Hey, "+data.firstName+"! ");
+  });
+}
+
+function getParameterByName(name, callback) {
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  callback( results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")) );
 }

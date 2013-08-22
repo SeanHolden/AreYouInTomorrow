@@ -1,9 +1,11 @@
 <div id="myweek-title">
-  <h2>Are you in this week?</h2>
+  <h2><span id="greeting"></span>Are you in this week?</h2>
   <p><strong>(commencing <%= thisMonday %>)</strong></p>
 </div>
 
 <form action="/myweek" method="post">
+  <input type="hidden" name="weekcommencing" value="<%= weekCommencing %>" />
+  <input type="hidden" id="token" name="token" value="" />
   <table style="width:100%;">
     <tr>
       <td class="labels">
@@ -52,8 +54,6 @@
       </td>
     </tr>
   </table>
-
-  
 
 </form>
 
