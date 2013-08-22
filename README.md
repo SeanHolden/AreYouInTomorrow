@@ -14,3 +14,4 @@ When completed, it should gather data from members of a particular work team abo
 * TWILIO_ACCOUNT_SID
 * TWILIO_AUTH_TOKEN
 * TWILIO_PHONE_NO
+* BITLY_ACCESS_TOKEN

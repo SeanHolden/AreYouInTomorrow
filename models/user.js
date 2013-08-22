@@ -17,6 +17,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     token: {
       type: DataTypes.TEXT
+    },
+    shortUrl: {
+      type: DataTypes.STRING
     }
   });
 }

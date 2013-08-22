@@ -7,6 +7,7 @@ var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var sequelize = require('./config/database').setup();
 var helpers = require('./lib/helpers');
+var bitly = require('./lib/bitly');
 var twilio = require('./lib/twilio');
 var app = express();
 
@@ -81,9 +82,15 @@ app.get('/api/whosinthisweek', function(req ,res){
 app.post('/api/create-user', function(req, res){
   var firstname = req.body.firstname;
   var msisdn = req.body.msisdn;
-  helpers.generateToken(function(token){
-    User.create({ firstName: firstname, msisdn: msisdn, token: token }).success(function(user){
-      res.end('Thanks, new user created.');
+  helpers.generateToken(null, function(token){
+    console.log('TOKEN RETURNED OF -> '+token);
+    bitly.shortenUrl('http://127.0.0.1:3000/myweek/?token='+token, function(shortUrl){
+      console.log('ABOUT TO CREATE USER');
+      User.create({ firstName: firstname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
+        res.end('Thanks, new user created.');
+      }).error(function(err){
+        res.end('Invalid request -> '+err);
+      });
     });
   });
 });
