@@ -65,10 +65,23 @@ app.post('/myweek', function(req, res){
   });
 });
 
-app.get('/api/users', function(req, res){
+app.get('/api/whosinthisweek', function(req ,res){
   res.setHeader('Content-Type', 'application/json');
-  User.findAll({include:[When]}).success(function(users){
-    res.end(JSON.stringify(users));
+  var d = new Date();
+  var queryDate = req.query.date || d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+
+  helpers.checkDateValid(queryDate, function(validDate){
+    if(validDate){
+      var date = new Date(validDate);
+      helpers.getTheWeekOf(date, function(weekDays){
+        helpers.getWeekArray(When, User, weekDays, function(weekArray){
+          var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
+          res.end( JSON.stringify(sortedWeek) );
+        });
+      });
+    }else{
+      res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
+    };
   });
 });
 
@@ -109,43 +122,33 @@ app.post('/api/reset-tokens', function(req, res){
   };
 });
 
+// Get all users.
+// app.get('/api/users', function(req, res){
+//   res.setHeader('Content-Type', 'application/json');
+//   User.findAll({include:[When]}).success(function(users){
+//     res.end(JSON.stringify(users));
+//   });
+// });
+
+// Get all users in on one particular day.
 // Usage. Call get request on this route, passing a date as a query.
 // Query should be in following format: date=yyyy-mm-dd
-app.get('/api/whosinonthisday', function(req, res){
-  res.setHeader('Content-Type', 'application/json');
-  if(req.query.date){
-    helpers.checkDateValid(req.query.date, function(validDate){
-      if(validDate){
-        helpers.whosInOnThisDay(When, User, validDate, function(objResponse){
-          res.end(JSON.stringify(objResponse));
-        });
-      }else{
-        res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
-      };
-    });
-  }
-});
+// app.get('/api/whosinonthisday', function(req, res){
+//   res.setHeader('Content-Type', 'application/json');
+//   if(req.query.date){
+//     helpers.checkDateValid(req.query.date, function(validDate){
+//       if(validDate){
+//         helpers.whosInOnThisDay(When, User, validDate, function(objResponse){
+//           res.end(JSON.stringify(objResponse));
+//         });
+//       }else{
+//         res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
+//       };
+//     });
+//   }
+// });
 
-app.get('/api/whosinthisweek', function(req ,res){
-  res.setHeader('Content-Type', 'application/json');
-  var d = new Date();
-  var queryDate = req.query.date || d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
 
-  helpers.checkDateValid(queryDate, function(validDate){
-    if(validDate){
-      var date = new Date(validDate);
-      helpers.getTheWeekOf(date, function(weekDays){
-        helpers.getWeekArray(When, User, weekDays, function(weekArray){
-          var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
-          res.end( JSON.stringify(sortedWeek) );
-        });
-      });
-    }else{
-      res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
-    };
-  });
-
-});
 
 // Sync models with the DB and start server.
 sequelize.sync().complete(function(err) {
