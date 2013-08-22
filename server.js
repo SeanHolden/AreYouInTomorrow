@@ -40,6 +40,18 @@ app.post('/mobileresponse', function(req, res){
   });
 });
 
+app.get('/myweek', function(req, res){
+  res.setHeader('Content-Type', 'text/html');
+  var dateFormat = require('dateformat');
+  var today = new Date();
+  helpers.getTheWeekOf(today, function(week){
+    res.render('myweek', {
+      layout:'layouts/layout',
+      locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
+    });
+  });
+});
+
 app.get('/api/users', function(req, res){
   res.setHeader('Content-Type', 'application/json');
   User.findAll({include:[When]}).success(function(users){

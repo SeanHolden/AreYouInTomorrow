@@ -1,0 +1,52 @@
+/* Container */
+.switch {
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  width: 105px;
+  height: 30px;
+  vertical-align: middle;
+}
+/* Background image */
+.switch .background {
+  background: url('/img/switch.png');
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 161px;
+  height: 30px;
+}
+/* Mask */
+.switch .mask {
+  background: url('http://www.maissan.net/templates/articles/jquery-switch/images/switch-mask.png');
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 105px;
+  height: 30px;
+}
+
+#myweek-title{
+  text-align: center;
+}
+
+.labels{
+  text-align:right;
+}
+
+.labels label{
+  margin-right:10px;
+}
+
+/*Submit Button for myweek*/
+.submit_myweek {
+  padding:10px;
+  background-color:#2eb273;
+  border-radius:10px;
+  color:white;
+  font-size:12pt;
+  font-weight: bold;
+}
