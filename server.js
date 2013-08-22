@@ -5,9 +5,9 @@
 
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
-var twilio = require('twilio');
 var sequelize = require('./config/database').setup();
 var helpers = require('./lib/helpers');
+var twilio = require('./lib/twilio');
 var app = express();
 
 // App configuration options
@@ -30,13 +30,6 @@ app.get('/', function(req, res){
       locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
     });
     res.end();
-  });
-});
-
-app.post('/mobileresponse', function(req, res){
-  res.setHeader('Content-Type', 'application/json');
-  helpers.processResponse(User, When, req, function(msg){
-    res.end(msg);
   });
 });
 
@@ -121,6 +114,19 @@ app.post('/api/reset-tokens', function(req, res){
     res.end('Not today.');
   };
 });
+
+app.post('/api/send-sms', function(){
+  twilio.sendSmsToAllUsers(User);
+});
+
+
+// This was for an SMS response. Not sure if still using or not.
+// app.post('/mobileresponse', function(req, res){
+//   res.setHeader('Content-Type', 'application/json');
+//   helpers.processResponse(User, When, req, function(msg){
+//     res.end(msg);
+//   });
+// });
 
 // Get all users.
 // app.get('/api/users', function(req, res){
