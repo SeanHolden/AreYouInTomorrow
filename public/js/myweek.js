@@ -45,7 +45,10 @@ function getUserName(token){
     url:"/api/find-user-by-token",
     data:"token="+token
   }).done(function(data){
-    $('#greeting').html("Hey, "+data.firstName+"! ");
+    console.log(data.firstName);
+    if(data.firstName != undefined){
+      $('#greeting').html("Hey, "+data.firstName+"! ");
+    };
   });
 }
 

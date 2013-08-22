@@ -1,6 +1,4 @@
 // TODO:
-// * Use bitly API to generate shortlinks to send out via SMS
-// * Add lastName to database
 // * Create a front end way of allowing users to register their name and mobile number
 
 var express = require('express');
@@ -34,6 +32,7 @@ app.get('/', function(req, res){
   });
 });
 
+// Input page for whether user is in or not. Requires token param for any data to be saved.
 app.get('/myweek', function(req, res){
   res.setHeader('Content-Type', 'text/html');
   var dateFormat = require('dateformat');
@@ -47,6 +46,7 @@ app.get('/myweek', function(req, res){
   });
 });
 
+// Endpoint to save data on what days a particular user will be in on a particular week.
 app.post('/myweek', function(req, res){
   var token = req.body.token;
 
@@ -54,11 +54,12 @@ app.post('/myweek', function(req, res){
     if(user){
       helpers.saveWeekForUser(req.body, When, user, res);
     }else{
-      res.end('Oops. No user found under this token.');
+      res.end('Oops. No user found under this token. This might be an old link from a previous week.');
     };
   });
 });
 
+// API call to get list of users who are in the office this week.
 app.get('/api/whosinthisweek', function(req ,res){
   res.setHeader('Content-Type', 'application/json');
   var d = new Date();
@@ -79,14 +80,14 @@ app.get('/api/whosinthisweek', function(req ,res){
   });
 });
 
+// API call to create a new user. Requires firstname and msisdn as params.
 app.post('/api/create-user', function(req, res){
   var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
   var msisdn = req.body.msisdn;
   helpers.generateToken(null, function(token){
-    console.log('TOKEN RETURNED OF -> '+token);
     bitly.shortenUrl('http://127.0.0.1:3000/myweek/?token='+token, function(shortUrl){
-      console.log('ABOUT TO CREATE USER');
-      User.create({ firstName: firstname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
+      User.create({ firstName: firstname, lastName: lastname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
         res.end('Thanks, new user created.');
       }).error(function(err){
         res.end('Invalid request -> '+err);
@@ -95,6 +96,7 @@ app.post('/api/create-user', function(req, res){
   });
 });
 
+// API call to find a particular user from a given token.
 app.get('/api/find-user-by-token', function(req, res){
   res.setHeader('Content-Type', 'application/json');
   var token = req.query.token;
@@ -111,57 +113,22 @@ app.get('/api/find-user-by-token', function(req, res){
   };
 });
 
+// API call to reset all tokens. Should be called once a week.
 app.post('/api/reset-tokens', function(req, res){
   var query = req.body.valid;
   if(query == 'valid'){
-    helpers.resetTokens(User, function(){
-      res.end('Tokens reset.');
+    helpers.resetTokensAndShortlinks(User, function(){
+      res.end('Tokens and shortlinks reset.');
     });
   }else{
     res.end('Not today.');
   };
 });
 
+// API call to send SMS to all users. Should be called once at beginning of week.
 app.post('/api/send-sms', function(){
   twilio.sendSmsToAllUsers(User);
 });
-
-
-// This was for an SMS response. Not sure if still using or not.
-// app.post('/mobileresponse', function(req, res){
-//   res.setHeader('Content-Type', 'application/json');
-//   helpers.processResponse(User, When, req, function(msg){
-//     res.end(msg);
-//   });
-// });
-
-// Get all users.
-// app.get('/api/users', function(req, res){
-//   res.setHeader('Content-Type', 'application/json');
-//   User.findAll({include:[When]}).success(function(users){
-//     res.end(JSON.stringify(users));
-//   });
-// });
-
-// Get all users in on one particular day.
-// Usage. Call get request on this route, passing a date as a query.
-// Query should be in following format: date=yyyy-mm-dd
-// app.get('/api/whosinonthisday', function(req, res){
-//   res.setHeader('Content-Type', 'application/json');
-//   if(req.query.date){
-//     helpers.checkDateValid(req.query.date, function(validDate){
-//       if(validDate){
-//         helpers.whosInOnThisDay(When, User, validDate, function(objResponse){
-//           res.end(JSON.stringify(objResponse));
-//         });
-//       }else{
-//         res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
-//       };
-//     });
-//   }
-// });
-
-
 
 // Sync models with the DB and start server.
 sequelize.sync().complete(function(err) {

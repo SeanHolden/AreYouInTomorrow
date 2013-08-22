@@ -9,6 +9,12 @@ module.exports = function(sequelize, DataTypes) {
         notNull: true
       }
     },
+    lastName: { 
+      type: DataTypes.STRING,
+      validate: {
+        notNull: true
+      }
+    },
     msisdn: {
       type: DataTypes.STRING,
       validate: {
