@@ -126,8 +126,10 @@ app.post('/api/reset-tokens', function(req, res){
 });
 
 // API call to send SMS to all users. Should be called once at beginning of week.
-app.post('/api/send-sms', function(){
-  twilio.sendSmsToAllUsers(User);
+app.post('/api/send-sms', function(req, res){
+  twilio.sendSmsToAllUsers(User, function(){
+    res.end('Done sending SMS.');
+  });
 });
 
 // Sync models with the DB and start server.
