@@ -141,4 +141,7 @@ sequelize.sync().complete(function(err) {
     app.listen(port);
     console.log('Listening on ' + port);
   }
+}).error(function(err){
+  console.log('ERROR:');
+  console.log(err);
 });
