@@ -2,11 +2,11 @@
 
 var Sequelize = require("sequelize");
  
-function setup(){
-  var sequelize = new Sequelize( process.env.DB_NAME || 'are_you_in_tomorrow', 'root', null, {
-    dialect: 'mysql',
+function setup(){                                      // DB name,              username, password
+  var sequelize = new Sequelize( process.env.DB_NAME || 'are_you_in_tomorrow', 'postgres', 'postgres', {
+    dialect: 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT || 5432,
     pool: { maxConnections: 5, maxIdleTime: 30}
   });
   
