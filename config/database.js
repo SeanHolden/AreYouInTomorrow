@@ -6,7 +6,7 @@ function setup(){                                           // DB name,         
   var sequelize = new Sequelize( process.env.DATABASE_URL || 'are_you_in_tomorrow', 'postgres', 'postgres', {
     dialect: 'postgres',
     // host: process.env.DB_HOST || 'localhost',
-    // port: process.env.DB_PORT || 5432,
+    port: 5432,
     pool: { maxConnections: 5, maxIdleTime: 30}
   });
   
