@@ -2,7 +2,7 @@
 
 var Sequelize = require("sequelize");
 var parseDbUrl = require("parse-database-url");
-var dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
+var dbConfig = parseDbUrl(process.env.DATABASE_URL.toString());
  
 function setup(){
   var sequelize = new Sequelize( dbConfig.database, dbConfig.user, dbConfig.password, {
