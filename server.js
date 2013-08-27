@@ -23,10 +23,14 @@ app.get('/', function(req, res){
   res.setHeader('Content-Type', 'text/html');
   var dateFormat = require('dateformat');
   var today = new Date();
+  var token = process.env.REQUEST_TOKEN;
   helpers.getTheWeekOf(today, function(week){
     res.render('index', {
       layout:'layouts/layout',
-      locals:{thisMonday: dateFormat(week[0], "mmmm dS, yyyy")}
+      locals:{
+        thisMonday: dateFormat(week[0], "mmmm dS, yyyy"),
+        token: token
+      }
     });
     res.end();
   });
