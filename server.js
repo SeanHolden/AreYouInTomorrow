@@ -115,8 +115,8 @@ app.get('/api/find-user-by-token', function(req, res){
 
 // API call to reset all tokens. Should be called once a week.
 app.post('/api/reset-tokens', function(req, res){
-  var query = req.body.valid;
-  if(query == 'valid'){
+  var token = req.body.token;
+  if(token == process.env.SMS_REQUEST_TOKEN){
     helpers.resetTokensAndShortlinks(User, function(){
       res.end('Tokens and shortlinks reset.');
     });
@@ -127,9 +127,14 @@ app.post('/api/reset-tokens', function(req, res){
 
 // API call to send SMS to all users. Should be called once at beginning of week.
 app.post('/api/send-sms', function(req, res){
-  twilio.sendSmsToAllUsers(User, function(){
-    res.end('Done sending SMS.');
-  });
+  var token = req.body.token;
+  if(token == process.env.SMS_REQUEST_TOKEN){
+    twilio.sendSmsToAllUsers(User, function(){
+      res.end('Done sending SMS.');
+    });
+  else{
+    res.end('Did not get correct token in params.');
+  };
 });
 
 // Sync models with the DB and start server.

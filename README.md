@@ -15,4 +15,5 @@ When completed, it should gather data from members of a particular work team abo
 * TWILIO_AUTH_TOKEN
 * TWILIO_PHONE_NO
 * BITLY_ACCESS_TOKEN
-* ROOT_URL (_Just the root path to website. e.g. http://www.example.com_)
+* ROOT_URL (_Just the root path to website. e.g. http://www.example.com._)
+* SMS_REQUEST_TOKEN (_randomly generated token to ensure send-sms post request can't just come from anywhere._)
