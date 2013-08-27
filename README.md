@@ -17,13 +17,13 @@ The result will be a viewable page containing days of the week (Monday to Friday
 
 __Before running this app, you will need to set the following environment variables.__
 
-* `TWILIO_ACCOUNT_SID` (_Get this by creating a twilio account._)
-* `TWILIO_AUTH_TOKEN` (_Get this by creating a twilio account._)
-* `TWILIO_PHONE_NO` (_Get this by creating a twilio account._)
-* `BITLY_ACCESS_TOKEN` (_Get this by creating a bitly account._)
-* `ROOT_URL` (_The root path to this app. e.g. http://www.example.com._)
-* `DATABASE_URL` (_URL to your database._)
-* `REQUEST_TOKEN` (_randomly generated token to ensure post requests can't just come from anywhere. This can be whatever you want it to be._)
+* `TWILIO_ACCOUNT_SID` (<i>Get this by creating a twilio account.</i>)
+* `TWILIO_AUTH_TOKEN` (<i>Get this by creating a twilio account.</i>)
+* `TWILIO_PHONE_NO` (<i>Get this by creating a twilio account.</i>)
+* `BITLY_ACCESS_TOKEN` (<i>Get this by creating a bitly account.</i>)
+* `ROOT_URL` (<i>The root path to this app. e.g. http://www.example.com.</i>)
+* `DATABASE_URL` (<i>URL to your database.</i>)
+* `REQUEST_TOKEN` (<i>Randomly generated token to ensure post requests can't just come from anywhere. This can be whatever you want it to be.</i>)
 
 ---
 
