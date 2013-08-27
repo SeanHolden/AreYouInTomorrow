@@ -132,7 +132,7 @@ app.post('/api/send-sms', function(req, res){
     twilio.sendSmsToAllUsers(User, function(){
       res.end('Done sending SMS.');
     });
-  else{
+  }else{
     res.end('Did not get correct token in params.');
   };
 });
