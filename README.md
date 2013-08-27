@@ -15,3 +15,4 @@ When completed, it should gather data from members of a particular work team abo
 * TWILIO_AUTH_TOKEN
 * TWILIO_PHONE_NO
 * BITLY_ACCESS_TOKEN
+* ROOT_URL (_Just the root path to website. e.g. http://www.example.com_)

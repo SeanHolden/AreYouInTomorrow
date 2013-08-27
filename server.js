@@ -86,7 +86,7 @@ app.post('/api/create-user', function(req, res){
   var lastname = req.body.lastname;
   var msisdn = req.body.msisdn;
   helpers.generateToken(null, function(token){
-    bitly.shortenUrl('http://127.0.0.1:3000/myweek/?token='+token, function(shortUrl){
+    bitly.shortenUrl(process.env.ROOT_URL+'/myweek/?token='+token, function(shortUrl){
       User.create({ firstName: firstname, lastName: lastname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
         res.end('Thanks, new user created.');
       }).error(function(err){
