@@ -6,7 +6,7 @@ function findWhosIn(){
   var token = $('#token').data('token');
   $.ajax({
     type: "GET",
-    url: "api/whosinthisweek?token="+token;
+    url: "api/whosinthisweek?token="+token
   }).done(function( response ) {
     fillWeekView(response);
   });
