@@ -64,20 +64,24 @@ app.get('/api/whosinthisweek', function(req ,res){
   res.setHeader('Content-Type', 'application/json');
   var d = new Date();
   var queryDate = req.query.date || d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-
-  helpers.checkDateValid(queryDate, function(validDate){
-    if(validDate){
-      var date = new Date(validDate);
-      helpers.getTheWeekOf(date, function(weekDays){
-        helpers.getWeekArray(When, User, weekDays, function(weekArray){
-          var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
-          res.end( JSON.stringify(sortedWeek) );
+  var token = req.query.token;
+  if(token == process.env.REQUEST_TOKEN){
+    helpers.checkDateValid(queryDate, function(validDate){
+      if(validDate){
+        var date = new Date(validDate);
+        helpers.getTheWeekOf(date, function(weekDays){
+          helpers.getWeekArray(When, User, weekDays, function(weekArray){
+            var sortedWeek = weekArray.sort( helpers.dynamicSort("date") );
+            res.end( JSON.stringify(sortedWeek) );
+          });
         });
-      });
-    }else{
-      res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
-    };
-  });
+      }else{
+        res.end('{"Error": "Date invalid. Please use the following format: yyyy-mm-dd"}');
+      };
+    });
+  }else{
+    res.end('Did not get correct token in params.');
+  };
 });
 
 // API call to create a new user. Requires firstname and msisdn as params.
@@ -121,7 +125,7 @@ app.post('/api/reset-tokens', function(req, res){
       res.end('Tokens and shortlinks reset.');
     });
   }else{
-    res.end('Not today.');
+    res.end('Did not get correct token in params.');
   };
 });
 
