@@ -2,7 +2,9 @@
 
 var Sequelize = require("sequelize");
 var parseDbUrl = require("parse-database-url");
-var dbConfig = parseDbUrl(process.env.DATABASE_URL.toString());
+var dbConfig = parseDbUrl(process.env.HEROKU_POSTGRESQL_COBALT_URL);
+console.log(process.env.HEROKU_POSTGRESQL_COBALT_URL);
+console.log(dbConfig);
  
 function setup(){
   var sequelize = new Sequelize( dbConfig.database, dbConfig.user, dbConfig.password, {
