@@ -1,5 +1,5 @@
 // User model
-// Attributes => id:int, firstName:string, msisdn:string, createdAt:date, updatedAt:date
+// Attributes => id:int, firstName:string, lastName:string, msisdn:string, token:text, shortUrl:string createdAt:date, updatedAt:date
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('User', {
