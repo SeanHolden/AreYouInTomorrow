@@ -1,12 +1,14 @@
 // Database config...
 
 var Sequelize = require("sequelize");
+var parseDbUrl = require("parse-database-url");
+var dbConfig = parseDbUrl(process.env["DATABASE_URL"]);
  
-function setup(){                                           // DB name,              username, password
-  var sequelize = new Sequelize( process.env.DATABASE_URL || 'are_you_in_tomorrow', 'postgres', 'postgres', {
+function setup(){
+  var sequelize = new Sequelize( dbConfig.database, dbConfig.user, dbConfig.password, {
     dialect: 'postgres',
-    // host: process.env.DB_HOST || 'localhost',
-    port: 5432,
+    host: dbConfig.host || 'localhost',
+    port: dbConfig.port || 5432,
     pool: { maxConnections: 5, maxIdleTime: 30}
   });
   

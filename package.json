@@ -12,7 +12,8 @@
     "sequelize" : "2.0.0-alpha2",
     "dateformat" : "1.0.6-1.2.3",
     "request" : "2.27.0",
-    "pg" : "2.0.0"
+    "pg" : "2.0.0",
+    "parse-database-url" : "0.2.0"
   },
   "engines":  {
     "node":"0.10.15"
