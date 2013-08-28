@@ -110,6 +110,24 @@ app.post('/api/create-user', function(req, res){
   };
 });
 
+app.post('/api/delete-user', function(req, res){
+  var msisdn = req.body.msisdn;
+  User.find({where:{msisdn:msisdn}}).success(function(user){
+    if(user){
+      user.destroy()
+      .success(function(){
+        res.end('User successfully deleted from database.');
+      })
+      .error(function(){
+        res.end('Something went wrong. User was found but not deleted.');
+      });
+    }else{
+      console.log('User with that msisdn not found');
+      res.end('User with that msisdn not found');
+    };
+  });
+});
+
 // API call to find a particular user from a given token.
 app.get('/api/find-user-by-token', function(req, res){
   res.setHeader('Content-Type', 'application/json');
