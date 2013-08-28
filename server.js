@@ -93,15 +93,21 @@ app.post('/api/create-user', function(req, res){
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
   var msisdn = req.body.msisdn;
-  helpers.generateToken(null, function(token){
-    bitly.shortenUrl(process.env.ROOT_URL+'/myweek/?token='+token, function(shortUrl){
-      User.create({ firstName: firstname, lastName: lastname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
-        res.end('Thanks, new user created.');
-      }).error(function(err){
-        res.end('Invalid request -> '+err);
+  var token = req.body.token;
+  if(token == process.env.REQUEST_TOKEN){
+    helpers.generateToken(null, function(token){
+      bitly.shortenUrl(process.env.ROOT_URL+'/myweek/?token='+token, function(shortUrl){
+        User.create({ firstName: firstname, lastName: lastname, msisdn: msisdn, token: token, shortUrl: shortUrl }).success(function(user){
+          sendSmsToSingleUser(user);
+          res.end('Thanks, new user created.');
+        }).error(function(err){
+          res.end('Invalid request -> '+err);
+        });
       });
     });
-  });
+  }else{
+    res.end('Did not get correct token in params.');
+  };
 });
 
 // API call to find a particular user from a given token.
