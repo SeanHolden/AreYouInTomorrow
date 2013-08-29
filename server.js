@@ -116,12 +116,12 @@ app.post('/api/delete-user', function(req, res){
   if(token == process.env.REQUEST_TOKEN){
     User.find({where:{msisdn:msisdn}}).success(function(user){
       if(user){
-        user.destroy()
-        .success(function(){
-          res.end('User successfully deleted from database.');
-        })
-        .error(function(){
-          res.end('Something went wrong. User was found but not deleted.');
+        user.getWhens().success(function(whens){
+          helpers.destroyAllWhens(whens, function(){
+            helpers.destroyUser(user, function(msg){
+              res.end(msg);
+            });
+          });
         });
       }else{
         console.log('User with that msisdn not found');
